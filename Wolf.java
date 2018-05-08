@@ -14,16 +14,18 @@ class Wolf extends Organism{
   int s=getSex();
   Wolf tempWolf;
   
-  void eat(){
-    setHealth(h+12);
+  void eat(Organism[][] map, int x, int y){
+    setHealth(h+map[x][y].getHealth());
+    map[x][y]=null;
   }
   
   void babies(Organism[][] map){
     for (int i=0; i<25; i++){
       for (int j=0; j<25; j++){
         if (map[i][j]==null ){
-          map[i][j]=new Wolf(i,j,20, (int)(Math.random()*2));
-          setHealth(h-10);
+          map[i][j]=new Wolf(i,j,15, (int)(Math.random()*2));
+          setHealth(getHealth()-10);
+          System.out.println("new Wolf @ "+i+" " +j);
           return;
         }
       }
@@ -44,80 +46,100 @@ class Wolf extends Organism{
   
   
   void move(Organism[][] map){ //Rn it just checks if there's another sheep in that spot
-    int direction=((int)(Math.random()*5));
-    if (direction==0){
-      if ((x!=24) && (map[x+1][y] == null)){
-        setXValue(x+1);
-        setHealth(h-2);
-      }else if ((x!=24) && map[x+1][y] instanceof Sheep){
-        setXValue(x+1);
-        eat();
-    } else if ((x!=24) && map[x+1][y] instanceof Wolf){
-      if (map[x+1][y].getSex() != s){
-        babies(map);
-      } else {
-        tempWolf=(Wolf)(map[x+1][y]);
-        fight(tempWolf);
-      }
-    }
-    }
-    
-    
-    
-    if (direction==1){
-      if ((x!=0) && (map[x-1][y] == null)){
-        setXValue(x-1);
-        setHealth(h-2);
-      }else if ((x!=0) && map[x-1][y] instanceof Sheep){
-        setXValue(x-1);
-        eat();
-      
-    } else if ((x!=0) && map[x-1][y] instanceof Wolf){
-      if (map[x-1][y].getSex() != s){
-        babies(map);
-      } else {
-        tempWolf=(Wolf)(map[x-1][y]);
-        fight(tempWolf);
-      }
-    }
-    }
-    
-    if (direction==2){
-      if ((y!=24) && (map[x][y+1] == null)){
-        setYValue(y+1);
-        setHealth(h-2);
-      }else if ((y!=24) && map[x][y+1] instanceof Sheep){
-        setYValue(y+1);
-        eat();
-      }
-    } else if ((y!=24) && map[x][y+1] instanceof Wolf){
-      if (map[x][y+1].getSex() != s){
-        babies(map);
-      } else{
-        tempWolf=(Wolf)(map[x][y+1]);
-        fight(tempWolf);
-      } 
-    }
-    
-    if (direction==3){
-      if ((y!=0) && (map[x][y-1] == null)){
-        setYValue(y-1);
-        setHealth(h-2);
-      }else if ((y!=0) && (map[x][y-1] instanceof Sheep)){
-        setYValue(y-1);
-        eat();
-      } else if ((y!=0) && map[x][y-1] instanceof Wolf){
-        if (map[x][y-1].getSex() != s){
-          babies(map);
-        } else{
-          tempWolf=(Wolf)(map[x][y-1]);
-          fight(tempWolf);
+    if (h>0){
+      int direction=((int)(Math.random()*5));
+      if (direction==0){
+        if ((x!=24) && (map[x+1][y] == null)){
+          map[x+1][y]= new Wolf(x+1,y,h-2,s);
+          map[x][y]=null;
+        }else if ((x!=24) && map[x+1][y] instanceof Sheep){
+          eat(map, x+1, y);
+          map[x+1][y]= new Wolf(x+1,y,h,s);
+          map[x][y]=null;
+        } else if ((x!=24) && map[x+1][y] instanceof Wolf){
+          if (map[x+1][y].getSex() != s){
+             if ((map[x+1][y].getHealth()>15) && (map[x][y].getHealth()>15)) {
+            babies(map);
+            }
+          } else {
+            tempWolf=(Wolf)(map[x+1][y]);
+            fight(tempWolf);
+          }
         }
       }
       
-      if (direction==4){
-        setHealth(h-1);
+      
+      
+      if (direction==1){
+        if ((x>0) && (map[x-1][y] == null)){
+          map[x-1][y]= new Wolf(x-1,y,h-2,s);
+          map[x][y]=null;
+        }else if ((x>0) && map[x-1][y] instanceof Sheep){
+          eat(map,x-1,y);
+          map[x-1][y]= new Wolf(x-1,y,h,s);
+          map[x][y]=null;
+          
+          
+        } else if ((x>0) && map[x-1][y] instanceof Wolf){
+          if (map[x-1][y].getSex() != s){
+            if ((map[x-1][y].getHealth()>15) && (map[x][y].getHealth()>15)) {
+            babies(map);
+            }
+          } else {
+            tempWolf=(Wolf)(map[x-1][y]);
+            fight(tempWolf);
+          }
+        }
       }
+      
+      if (direction==2){
+        if ((y<24) && (map[x][y+1] == null)){
+          map[x][y+1]= new Wolf(x,y+1,h-2,s);
+          map[x][y]=null;
+        }else if ((y!=24) && map[x][y+1] instanceof Sheep){
+          eat(map, x, y+1);
+          map[x][y+1]= new Wolf(x,y+1,h,s);
+          map[x][y]=null;
+          
+        }
+      } else if ((y<24) && map[x][y+1] instanceof Wolf){
+        if (map[x][y+1].getSex() != s){
+           if ((y<24)&&(map[x][y+1].getHealth()>15) && (map[x][y].getHealth()>15)) {
+            babies(map);
+            
+           }
+        } else{
+          tempWolf=(Wolf)(map[x][y+1]);
+          fight(tempWolf);
+        } 
+      }
+      
+      if (direction==3){
+        if ((y>0) && (map[x][y-1] == null)){
+          map[x][y-1]= new Wolf(x,y-1,h-2,s);
+          map[x][y]=null;
+        }else if ((y>0) && (map[x][y-1] instanceof Sheep)){
+          eat(map, x, y-1);
+          map[x][y-1]= new Wolf(x,y,h-2,s);
+          map[x][y]=null;
+          
+        } else if ((y>0) && map[x][y-1] instanceof Wolf){
+          if (map[x][y-1].getSex() != s){
+             if ((map[x][y-1].getHealth()>15) && (map[x][y].getHealth()>15)) {
+            babies(map);
+            }
+          } else{
+            tempWolf=(Wolf)(map[x][y-1]);
+            fight(tempWolf);
+          }
+        }
+        
+        if (direction==4){
+          setHealth(h-1);
+        }
+      }
+    } else {
+      map[x][y]=null;
     }
-  }  
+  }
 }
