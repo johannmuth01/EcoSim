@@ -22,7 +22,7 @@ class Ecosystem {
       ySpawn= ((int)(Math.random()*25)); 
       
       if(map[xSpawn][ySpawn] == null){
-        map[xSpawn][ySpawn]=new Wolf(xSpawn, ySpawn, 30, (int)(Math.random()*2));
+        map[xSpawn][ySpawn]= new Wolf(xSpawn, ySpawn, 30, (int)(Math.random()*2));
         numWolf++;
       }
     }
@@ -41,11 +41,7 @@ class Ecosystem {
   
   public static void main(String[] args) { 
     
-    
-    
-    
-    
-    Organism map[][] = new Organism[25][25];
+    Map map = new Map(25);
     
     // Initialize Map
     initialize(map);

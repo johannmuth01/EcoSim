@@ -35,7 +35,7 @@ class Sheep extends Organism{
       if ((x!=24) && (map[x+1][y] == null)){
         setXValue(x+1);
         setHealth(h-2);
-      }else if ((x!=24) && map[x+1][y] instanceof Plant){
+      } else if ((x!=24) && map[x+1][y] instanceof Plant){
         setXValue(x+1);
         eat();
       } else if ((x!=24) && map[x+1][y] instanceof Sheep){
